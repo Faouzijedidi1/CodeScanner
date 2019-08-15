@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Code Scanner SSD</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://codemirror.net/lib/codemirror.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+</head>
+<body style="background-color:#ededed;">
+<div style="background-color: #337ab7; height: 90px;">
+    <a class="navbar-brand" href="#">
+        <h2 style="color: #dddddd">Code Scanner SSD</h2>
+        <a href="/logout" class="btn btn-danger btn-lg" style="float: right;margin-right:20px;margin-top: 20px; ">Logout</a>
+    </a>
+</div>
+<h1 style="text-align: center">Welcome, Admin</h1>
+</div>
+<div class="col-md-8 col-md-offset-2">
+    <h1>Upload A File To Scan</h1>
+    <form method="POST" action="/uploadFile" enctype="multipart/form-data">
+        <div class="form-group">
+            <div class="input-group input-file" name = "file">
+                <input type="text" class="form-control" placeholder='Choose a file...' />
+                <span class="input-group-btn">
+        		<button class="btn btn-default btn-choose" type="button">Choose</button>
+    		</span>
+
+
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-lg btn-primary pull-right">Submit</button>
+            <button type="reset" class="btn btn-lg btn-danger">Reset</button>
+        </div>
+    </form>
+</div>
+<div>
+    <script src="https://codemirror.net/lib/codemirror.js"></script>
+    <div class="col-md-8 col-md-offset-2">
+        <h1>Or Write the Code Here</h1>
+        <form action="#" th:action="@{/check}" method="post" id ="code-snippet">
+            <textarea class=" code-area" name="code" rows="13" style="height: 200px;width: 100px; margin: auto;" th:utext="${message}"> </textarea>
+
+            <input class="btn btn-lg btn-block btn-primary" style="margin-top: 20px;margin-bottom: 20px;" type="submit" value="Scan Code Now">
+        </form>
+    </div>
+
+</div>
+
+
+
+<div class="col-md-8 col-md-offset-2">
+    <h1>Vulnerability Report</h1>
+    <textarea class=" code-area" rows="13" style="height: 300px;width: 100%; margin: auto; resize: none" th:utext="${report}"  disabled></textarea>
+</div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var code = $(".code-area")[0];
+        var editor = CodeMirror.fromTextArea(code, {
+            mode: "text/x-java",
+            theme: "default",
+            lineNumbers: true,
+        });
+
+    })
+
+    function bs_input_file() {
+        $(".input-file").before(
+            function() {
+                if ( ! $(this).prev().hasClass('input-ghost') ) {
+                    var element = $("<input type='file' class='input-ghost' style='visibility:hidden; height:0'>");
+                    element.attr("name",$(this).attr("name"));
+                    element.change(function(){
+                        element.next(element).find('input').val((element.val()).split('\\').pop());
+                    });
+                    $(this).find("button.btn-choose").click(function(){
+                        element.click();
+                    });
+                    $(this).find("button.btn-reset").click(function(){
+                        element.val(null);
+                        $(this).parents(".input-file").find('input').val('');
+                    });
+                    $(this).find('input').css("cursor","pointer");
+                    $(this).find('input').mousedown(function() {
+                        $(this).parents('.input-file').prev().click();
+                        return false;
+                    });
+                    return element;
+                }
+            }
+        );
+    }
+    $(function() {
+        bs_input_file();
+    });
+</script>
+</body>
+</html>
